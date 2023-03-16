@@ -1,0 +1,15 @@
+make all --dry-run --keep-going --print-directory
+make: Entering directory '/home/abrahimzaman/Documents/C++/Learning1'
+as --32 src/boot.s -o boot.o
+gcc -m32 -Iinclude -Iinclude/drivers -Iinclude/drivers/video -Iinclude/drivers/input -Iinclude/kernel -Iinclude/standardlibc -Iinclude/dev -c src/kernel.cpp -o kernel.o -std=c++2a -nostdlib -ffreestanding -g -O2 -Wall -Wextra -Wwrite-strings
+ld -melf_i386 -T linker.ld kernel.o boot.o -o abraos.bin -nostdlib
+grub-file --is-x86-multiboot abraos.bin
+mkdir -p isodir/boot/grub
+cp abraos.bin isodir/boot/abraos.bin
+cp grub.cfg isodir/boot/grub/grub.cfg
+grub-mkrescue -o abraos.iso isodir
+(killall qemu-system-x86_64 && sleep 1) || true
+qemu-system-x86_64 -cdrom abraos.iso
+rm -rf isodir abraos.bin abraos.iso kernel.o boot.o
+make: Leaving directory '/home/abrahimzaman/Documents/C++/Learning1'
+ 
